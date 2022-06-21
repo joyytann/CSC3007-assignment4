@@ -1,0 +1,33 @@
+.svg{
+    display: flex;
+    align-items: center;
+    
+}
+
+.node{
+    align-items: center;
+}
+.tooltip{
+   
+        position: absolute;
+        background:#fff;
+        visibility: hidden;
+        padding: 10px;
+        border:solid 1px black;
+        border-radius:10px ;
+        text-transform: capitalize;
+    
+    
+}
+.button-group{
+    text-align: center;
+}
+.title{
+    text-align: center;
+}
+#group1{
+    margin-right: 5px;
+}
+#group2{
+    margin-left: 5px;
+}
