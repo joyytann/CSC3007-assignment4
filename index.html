@@ -24,8 +24,7 @@
         .select("svg")
         .attr("viewBox", "0 200 " + width + " " + height);
 
-     
-        document.getElementById("group1").disabled = true;
+      document.getElementById("group1").disabled = true;
 
       // Load external data
       Promise.all([
@@ -179,122 +178,74 @@
                 d.target.y
               );
             });
-            var legend = svg.append("g")
-        .attr("id", "legend");
 
-        var legend_entry = legend.selectAll("g.legend")
-            .data(()=>{
-               // if(type == "gender"){
-                    return ["Female", "Male"];
-                // }
-                // else if (type == "vaccination"){
-                //     return ["no", "yes (2 doses)", "partial (1 dose)"];
-                // }
-            })
-            .enter().append("g")
-            .attr("class", "legend_entry");
-
-        const ls_w = 40,
-            ls_h = 20;
-
-        legend_entry.append("rect")
-            .attr("x",  function(d, i) {
-                return width/1.3 + (i * ls_h*2.2);
-            })
-            .attr("y",height/2 -140)
-            // .style("margin-left","10px")
-            .attr("width", ls_w)
-            .attr("height", ls_h)
-            .style("fill", function(d) {
-                //if(type == "gender"){
-                    return colorScale(d);
-                // }
-                // else if (type == "vaccination"){
-                //     return vaccinationcolorScale(d);
-                // }
-            })
-            .style("opacity", 0.8);
-
-        legend_entry.append("text")
-            .attr("x",  function(d, i) {
-                return width/1.3 +(i * ls_h*2.2)})
-            .attr("y", height/2 -100)
-            // .style("margin-left","10px")
-            .style("font-size",10)
-            .text(function (d, i) { return d});
-
-
-        legend.append("text").attr("x", width/1.3).attr("y", height/2 - 150).text("Legend");
-        
-            
             //reateLegend("gender")
-            
           });
 
-      function createLegend(type){
-        var legend = svg.append("g")
-        .attr("id", "legend");
+        createLegend("gender");
+        function createLegend(type) {
+          var legend = svg.append("g").attr("id", "legend");
 
-        var legend_entry = legend.selectAll("g.legend")
-            .data(()=>{
-                if(type == "gender"){
-                    return ["Female", "Male"];
-                }
-                else if (type == "vaccination"){
-                    return ["no", "yes (2 doses)", "partial (1 dose)"];
-                }
+          var legend_entry = legend
+            .selectAll("g.legend")
+            .data(() => {
+              if (type == "gender") {
+                return ["Female", "Male"];
+              } else if (type == "vaccination") {
+                return ["no", "yes (2 doses)", "partial (1 dose)"];
+              }
             })
-            .enter().append("g")
+            .enter()
+            .append("g")
             .attr("class", "legend_entry");
 
-        const ls_w = 40,
+          const ls_w = 40,
             ls_h = 20;
 
-        legend_entry.append("rect")
-            .attr("x",  function(d, i) {
-                return width/1.3 + (i * ls_h*2.2);
-            })
-            .attr("y",height/2 -140)
-            // .style("margin-left","10px")
+          legend_entry
+            .append("rect")
+
             .attr("width", ls_w)
             .attr("height", ls_h)
-            .style("fill", function(d) {
-                if(type == "gender"){
-                    return colorScale(d);
-                }
-                else if (type == "vaccination"){
-                    return vaccinationcolorScale(d);
-                }
+            .attr("transform", (d, i) => {
+              var x = height / 1.28;
+              var y = width / 2.9 + i * ls_h * 2;
+              return `translate(${x}, ${y})`;
+            })
+            .style("fill", function (d) {
+              if (type == "gender") {
+                return colorScale(d);
+              } else if (type == "vaccination") {
+                return vaccinationcolorScale(d);
+              }
             })
             .style("opacity", 0.8);
 
-        legend_entry.append("text")
-            .attr("x",  function(d, i) {
-                return width/1.3 +(i * ls_h*2.2)})
-            .attr("y", height/2 -100)
+          legend_entry
+            .append("text")
+            .attr("x", height / 1.28)
+            .attr("y", (d, i) => width / 3 + i * ls_h * 2.1)
             // .style("margin-left","10px")
-            .style("font-size",10)
-            .text(function (d, i) { return d});
+            .style("font-size", 10)
+            .style("text-transform", "capitalize")
+            .text(function (d, i) {
+              return d;
+            });
 
-
-        legend.append("text").attr("x", width/1.3).attr("y", height/2 - 150).text("Legend");
-        
+          legend
+            .append("text")
+            .attr("x", width / 1.3)
+            .attr("y", height / 2 - 150)
+            .style("Font-weight", "700")
+            .text("Legend");
         }
 
-      
         d3.select("#group1").on("click", function () {
-           
-            legend_entry = d3.select("g.legend_entry")
-            .selectAll("rect")
-            .style("fill", function(d) {
-               
-                    return colorScale(d);
-                
-            })
+          var context = d3.selectAll("#legend");
+          context.remove();
+          createLegend("gender");
 
-            //createLegend("gender");
-
-        vaccination = false;
+          vaccination = false;
           d3.selectAll("circle")
             .transition()
             .duration(1000)
@@ -323,20 +274,12 @@
           document.getElementById("group1").disabled = true;
           document.getElementById("group2").disabled = false;
         });
-        
 
         d3.select("#group2").on("click", function () {
-            var context = d3.selectAll('#legend');
-           // console.log(context.remove());
-            context.remove();
-           // createLegend("vaccination");
-           legend_entry = d3.selectAll("g.legend_entry")
-            .selectAll("rect")
-            .style("fill", function(d) {
-               
-                return vaccinationcolorScale(d);
-                
-            })
+          var context = d3.selectAll("#legend");
+          context.remove();
+          createLegend("vaccination");
+
           vaccination = true;
           d3.selectAll("circle")
             .transition()
@@ -365,7 +308,6 @@
           document.getElementById("group1").disabled = false;
         });
 
-        
         function dragstarted(event, d) {
           console.log(event);
           if (!event.active) simulation.alphaTarget(0.3).restart();
